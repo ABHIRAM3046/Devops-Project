@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 60px;
+            background-color: #1d2d50;
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            border-radius: 50%;
+            background-color: #3a4f7a;
+            margin: 10px;
+            color: white;
+        }
+
+        .sidebar ul .active {
+            background-color: #4caf50;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        p {
+            color: #6c757d;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            width: 50%;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button.prev {
+            background-color: #6c757d;
+        }
+
+        .experience-item, .education-item {
+            border: 1px solid #ced4da;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .skill-tag {
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .add-more {
+            background-color: #007bff;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <ul>
+                <li class="active" data-step="1">1</li>
+                <li data-step="2">2</li>
+                <li data-step="3">3</li>
+                <li data-step="4">4</li>
+            </ul>
+        </aside>
+        <main class="content">
+            <form id="resumeForm" action="/submit" method="post">
+                <!-- Step 1: Personal Information -->
+                <div class="step-content active" id="step1">
+                    <h1>Let's start with your header</h1>
+                    <p>Include your full name and at least one way for employers to reach you.</p>
+                    <div class="form-group">
+                        <label>First Name*</label>
+                        <input type="text" name="first_name" required placeholder="Enter first name">
+                    </div>
+                    <div class="form-group">
+                        <label>Surname*</label>
+                        <input type="text" name="surname" required placeholder="Enter surname">
+                    </div>
+                    <div class="form-group">
+                        <label>City</label>
+                        <input type="text" name="city" placeholder="Enter city">
+                    </div>
+                    <div class="form-group">
+                        <label>Country</label>
+                        <input type="text" name="country" placeholder="Enter country">
+                    </div>
+                    <div class="form-group">
+                        <label>PIN Code</label>
+                        <input type="text" name="pincode" placeholder="Enter PIN code">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone*</label>
+                        <input type="tel" name="phone" required placeholder="+91 11 1234 5677">
+                    </div>
+                    <div class="form-group">
+                        <label>Email*</label>
+                        <input type="email" name="email" required placeholder="Enter your email">
+                    </div>
+                </div>
+
+                <!-- Step 2: Professional Summary & Role -->
+                <div class="step-content" id="step2">
+                    <h1>Professional Summary & Target Role</h1>
+                    <p>Tell us about your career objective and the role you're targeting.</p>
+                    <div class="form-group">
+                        <label>Target Role*</label>
+                        <input type="text" name="target_role" required placeholder="e.g., Senior Software Engineer">
+                    </div>
+                    <div class="form-group">
+                        <label>Professional Summary*</label>
+                        <textarea name="professional_summary" required placeholder="Write a brief summary of your professional background and career objectives..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn Profile</label>
+                        <input type="url" name="linkedin" placeholder="https://linkedin.com/in/yourprofile">
+                    </div>
+                    <div class="form-group">
+                        <label>Portfolio Website</label>
+                        <input type="url" name="portfolio" placeholder="https://yourportfolio.com">
+                    </div>
+                </div>
+
+                <!-- Step 3: Experience -->
+                <div class="step-content" id="step3">
+                    <h1>Work Experience</h1>
+                    <p>List your relevant work experience, starting with the most recent.</p>
+                    <button type="button" class="add-more" onclick="addExperience()">+ Add Experience</button>
+                    <div id="experience-container">
+                        <div class="experience-item">
+                            <div class="form-group">
+                                <label>Company Name*</label>
+                                <input type="text" name="company[]" required placeholder="Enter company name">
+                            </div>
+                            <div class="form-group">
+                                <label>Position*</label>
+                                <input type="text" name="position[]" required placeholder="Enter job title">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration*</label>
+                                <div style="display: flex; gap: 10px; width: 50%;">
+                                    <input type="month" name="start_date[]" required>
+                                    <input type="month" name="end_date[]" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Key Responsibilities & Achievements*</label>
+                                <textarea name="responsibilities[]" required placeholder="• List your key responsibilities and achievements&#10;• Use bullet points for better readability&#10;• Focus on quantifiable achievements"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Education & Skills -->
+                <div class="step-content" id="step4">
+                    <h1>Education & Skills</h1>
+                    <p>Add your educational background and key skills.</p>
+                    <h2>Education</h2>
+                    <button type="button" class="add-more" onclick="addEducation()">+ Add Education</button>
+                    <div id="education-container">
+                        <div class="education-item">
+                            <div class="form-group">
+                                <label>Degree*</label>
+                                <input type="text" name="degree[]" required placeholder="e.g., Bachelor of Science in Computer Science">
+                            </div>
+                            <div class="form-group">
+                                <label>Institution*</label>
+                                <input type="text" name="institution[]" required placeholder="Enter institution name">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration*</label>
+                                <div style="display: flex; gap: 10px; width: 50%;">
+                                    <input type="month" name="edu_start_date[]" required>
+                                    <input type="month" name="edu_end_date[]" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>GPA/Score</label>
+                                <input type="text" name="gpa[]" placeholder="e.g., 3.8/4.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>Skills</h2>
+                    <div class="form-group">
+                        <label>Technical Skills*</label>
+                        <textarea name="technical_skills" required placeholder="Enter your technical skills (e.g., Programming Languages, Tools, Frameworks)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Soft Skills</label>
+                        <textarea name="soft_skills" placeholder="Enter your soft skills (e.g., Leadership, Communication, Problem Solving)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Certifications</label>
+                        <textarea name="certifications" placeholder="List any relevant certifications"></textarea>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="prev" onclick="prevStep()" style="display: none;">Previous</button>
+                    <button type="button" class="next" onclick="nextStep()">Next</button>
+                    <button type="submit" style="display: none;">Generate Resume</button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function showStep(step) {
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.sidebar li').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`step${step}`).classList.add('active');
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+
+            const prevButton = document.querySelector('.prev');
+            const nextButton = document.querySelector('.next');
+            const submitButton = document.querySelector('button[type="submit"]');
+
+            prevButton.style.display = step === 1 ? 'none' : 'block';
+            nextButton.style.display = step === totalSteps ? 'none' : 'block';
+            submitButton.style.display = step === totalSteps ? 'block' : 'none';
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function addExperience() {
+            const container = document.getElementById('experience-container');
+            const newExperience = container.children[0].cloneNode(true);
+            newExperience.querySelectorAll('input, textarea').forEach(input => input.value = '');
+            container.appendChild(newExperience);
+        }
+
+        function addEducation() {
+            const container = document.getElementById('education-container');
+            const newEducation = container.children[0].cloneNode(true);
+            newEducation.querySelectorAll('input').forEach(input => input.value = '');
+            container.appendChild(newEducation);
+        }
+    </script>
+</body>
+</html>
